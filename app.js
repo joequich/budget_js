@@ -1,20 +1,12 @@
+//Budget controller
 var budgetController = (function() {
 
-	var x = 23;
-
-	var add = function(a) {
-		return x + a;
-	}
-
-	return {
-		publicTest: function(b) {
-			return add(b);
-		}
-	}
+	//some code...
 
 })();
 
 
+//UI conntroller
 var UIController = (function () {
 
 	//some code...
@@ -22,13 +14,19 @@ var UIController = (function () {
 })();
 
 
+//Global app controller
 var controller = (function (bugetCtrl, UICtrl) {
-	var z = bugetCtrl.publicTest(5);
 
-	return {
-		anotherPublic: function() {
-			console.log(z)
-		}
+	var ctrlAddItem = function () {
+		console.log("Add was pressed")
 	}
+	
+	document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+
+	document.addEventListener('keypress', function (event) {
+		if ( event.keyCode === 13 || event.which === 13 ) {
+			ctrlAddItem();
+		}
+	});
 
 })(budgetController, UIController);
