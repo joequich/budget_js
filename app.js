@@ -120,6 +120,21 @@ let UIController = (function () {
 			
 		},
 
+		clearFields: function () {
+			let fields, fieldsArr;
+
+			fields = document.querySelectorAll(DOMStrings.inputDescription+ ', ' +DOMStrings.inputValue) 
+
+			fieldsArr = Array.prototype.slice.call(fields);
+
+			fieldsArr.forEach( function (current, index, array) {
+				current.value = "";
+			});
+
+			fieldsArr[0].focus();
+
+		},
+
 		getDOMStrings: function () {
 			return DOMStrings;
 		}
@@ -155,6 +170,8 @@ let controller = (function (bugetCtrl, UICtrl) {
 
 		//agregar item en la UI
 		UICtrl.addListItem(newitem, input.type);
+
+		UICtrl.clearFields();
 	}
 
 	return {
