@@ -7,13 +7,20 @@ let budgetController = (function() {
 		this.id = id;
 		this.description = description;
 		this.value = value;
-	}
+	};
 
 	let Income = function (id, description, value) {
 		this.id = id;
 		this.description = description;
 		this.value = value;
-	}
+	};
+
+	let calculateTotal = function(type) {
+		let sum = 0;
+		data.allItems[type].forEach(function (current) {
+			sum = sum + current.value; 
+		});
+	};
 
 	let data = {
 		allItems: {
@@ -24,7 +31,7 @@ let budgetController = (function() {
 			exp: 0,
 			inc: 0
 		}
-	}
+	};
 
 	return {
 		addItem: function (type, des, val) {
@@ -46,6 +53,14 @@ let budgetController = (function() {
 			console.log("item added!!")
 			//
 			return newItem;
+		},
+
+		calculateBudget: function() {
+			//calcular el total de ingresos y gastos
+
+			//calcular el presupuesto: ingresos y gastos
+
+			//
 		},
 
 		testing: function () {
@@ -75,7 +90,7 @@ let UIController = (function () {
 			return {
 				type : document.querySelector(DOMStrings.inputType).value,
 				description : document.querySelector(DOMStrings.inputDescription).value,
-				value : document.querySelector(DOMStrings.inputValue).value
+				value : parseFloat(document.querySelector(DOMStrings.inputValue).value)
 
 			};
 			
@@ -159,19 +174,33 @@ let controller = (function (bugetCtrl, UICtrl) {
 		});
 	}
 
+	let updateBudget = function () {
+
+	}
+
 	
+
 	let ctrlAddItem = function () {
 		let input, newitem;
 		//datos de entrada
 		input = UICtrl.getInput();
 		
-		//crear tipo de datos, agregar item al budget controller
-		newitem = bugetCtrl.addItem(input.type, input.description, input.value);
 
-		//agregar item en la UI
-		UICtrl.addListItem(newitem, input.type);
+		if ( input.description !== "" && !isNaN(input.value) && !isNaN(input.value) > 0) {
 
-		UICtrl.clearFields();
+			//crear tipo de datos, agregar item al budget controller
+			newitem = bugetCtrl.addItem(input.type, input.description, input.value);
+
+			//agregar item en la UI
+			UICtrl.addListItem(newitem, input.type);
+
+			//limpiar inputs
+			UICtrl.clearFields();
+
+			updateBudget();
+		}
+
+		
 	}
 
 	return {
