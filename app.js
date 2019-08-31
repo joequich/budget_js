@@ -18,8 +18,10 @@ let budgetController = (function() {
 	let calculateTotal = function(type) {
 		let sum = 0;
 		data.allItems[type].forEach(function (current) {
-			sum = sum + current.value; 
+			sum += current.value; 
 		});
+
+		data.totals[type] = sum;
 	};
 
 	let data = {
@@ -30,7 +32,9 @@ let budgetController = (function() {
 		totals: {
 			exp: 0,
 			inc: 0
-		}
+		},
+		budget: 0,
+		percent: -1
 	};
 
 	return {
@@ -57,10 +61,25 @@ let budgetController = (function() {
 
 		calculateBudget: function() {
 			//calcular el total de ingresos y gastos
-
+			calculateTotal('exp');
+			calculateTotal('inc');
 			//calcular el presupuesto: ingresos y gastos
+			data.budget = data.totals.inc - data.totals.exp;
+			//calcular el procentaje de ingresos que gastamos
+			if(data.totals.inc > 0) {
+				data.percent = Math.round((data.totals.exp / data.totals.inc) * 100);
+			}else {
+				data.percent = -1;
+			}			
+		},
 
-			//
+		getBudget: function() {
+			return {
+				budget: data.budget,
+				totalInc: data.totals.inc,
+				totalExp: data.totals.exp,
+				percentage: data.percent
+			}
 		},
 
 		testing: function () {
@@ -160,7 +179,7 @@ let UIController = (function () {
 
 
 //Global app controller
-let controller = (function (bugetCtrl, UICtrl) {
+let controller = (function (budgetCtrl, UICtrl) {
 
 	let setupEventListeners = function () {
 		let DOM = UICtrl.getDOMStrings();
@@ -175,7 +194,12 @@ let controller = (function (bugetCtrl, UICtrl) {
 	}
 
 	let updateBudget = function () {
-
+		// calculate the budget
+		budgetCtrl.calculateBudget();
+		//return the budget
+		let budget = budgetCtrl.getBudget();
+		//display the budget on the UI
+		console.log(budget);
 	}
 
 	
@@ -189,7 +213,7 @@ let controller = (function (bugetCtrl, UICtrl) {
 		if ( input.description !== "" && !isNaN(input.value) && !isNaN(input.value) > 0) {
 
 			//crear tipo de datos, agregar item al budget controller
-			newitem = bugetCtrl.addItem(input.type, input.description, input.value);
+			newitem = budgetCtrl.addItem(input.type, input.description, input.value);
 
 			//agregar item en la UI
 			UICtrl.addListItem(newitem, input.type);
